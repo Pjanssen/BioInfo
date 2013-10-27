@@ -4,6 +4,7 @@ module BioInfo.DNA (
    , complement
    , reverseComplement
    , isReverseComplement
+   , getKmers
 )
 where
 
@@ -34,6 +35,17 @@ isReverseComplement ns ns' = reverseComplement ns == ns'
 
 -------------------------------------------------------------------------------
 
+-- |Creates a list of all kmers with the given length in the given genome.
+getKmers :: Int -> Genome -> [Genome]
+getKmers k genome = dropLast (k - 1) (getKmers' k genome)
 
+getKmers :: Int -> Genome -> [Genome]
+getKmers' _ []     = []
+getKmers' k genome = take k genome : getKmers' k (tail genome)
+
+dropLast :: Int -> [x] -> [x]
+dropLast _ []   = []
+dropLast 0 xs   = xs
+dropLast len xs = dropLast (len - 1) (init xs)
 
 -------------------------------------------------------------------------------
