@@ -45,12 +45,13 @@ getKmers' k genome = take k genome : getKmers' k (tail genome)
 
 -------------------------------------------------------------------------------
 
+-- |Gets the skew value at each point in the given genome.
+getSkews :: Genome -> [Int]
+getSkews = scanl (\s n -> s + skew n) 0
+
 skew :: Nucleotide -> Int
 skew 'G' = 1
 skew 'C' = -1
 skew _   = 0
-
-getSkews :: Genome -> [Int]
-getSkews = scanl (\s n -> s + skew n) 0
 
 -------------------------------------------------------------------------------
