@@ -5,6 +5,7 @@ module BioInfo.DNA (
    , reverseComplement
    , isReverseComplement
    , getKmers
+   , getSkews
 )
 where
 
