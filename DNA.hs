@@ -18,13 +18,6 @@ type Genome = [Nucleotide]
 
 -------------------------------------------------------------------------------
 
-complement :: Nucleotide -> Nucleotide
-complement 'A' = 'T'
-complement 'T' = 'A'
-complement 'G' = 'C'
-complement 'C' = 'G'
-complement n   = error (n : " is an unknown nucleotide")
-
 -- |Creates the reverse complement of the given genome.
 reverseComplement :: Genome -> Genome
 reverseComplement genome = map complement $ reverse genome
@@ -33,19 +26,21 @@ reverseComplement genome = map complement $ reverse genome
 isReverseComplement :: Genome -> Genome -> Bool
 isReverseComplement ns ns' = reverseComplement ns == ns'
 
+complement :: Nucleotide -> Nucleotide
+complement 'A' = 'T'
+complement 'T' = 'A'
+complement 'G' = 'C'
+complement 'C' = 'G'
+complement n   = error (n : " is an unknown nucleotide")
+
 -------------------------------------------------------------------------------
 
 -- |Creates a list of all kmers with the given length in the given genome.
 getKmers :: Int -> Genome -> [Genome]
-getKmers k genome = dropLast (k - 1) (getKmers' k genome)
+getKmers k genome = head $ drop (k - 1) $ iterate init (getKmers' k genome)
 
-getKmers :: Int -> Genome -> [Genome]
+getKmers' :: Int -> Genome -> [Genome]
 getKmers' _ []     = []
 getKmers' k genome = take k genome : getKmers' k (tail genome)
-
-dropLast :: Int -> [x] -> [x]
-dropLast _ []   = []
-dropLast 0 xs   = xs
-dropLast len xs = dropLast (len - 1) (init xs)
 
 -------------------------------------------------------------------------------
