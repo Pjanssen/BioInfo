@@ -1,4 +1,4 @@
-module BioInfo.Utils
+module BioInfo.List
 (
    -- * List functions
      subsetIndices
