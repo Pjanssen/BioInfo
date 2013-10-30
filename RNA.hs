@@ -1,10 +1,12 @@
 module BioInfo.RNA
 (
    -- * Data types
-     AminoAcid(AminoAcid, aminoCode, Stop)
+     AminoAcid(AminoAcid, AminoStop)
    -- * Functions
+   , aminoCode
    , codons
    , toAminoAcid
+   , toAminoAcids
 )
 where
 
@@ -13,15 +15,25 @@ import BioInfo.DNA
 -------------------------------------------------------------------------------
 
 -- | A data type for a single amino acid.
-data AminoAcid = AminoAcid { aminoCode :: Char }
+data AminoAcid = AminoAcid Char
                | AminoStop
    deriving (Eq, Show)
 
 -------------------------------------------------------------------------------
 
+-- | Gets the amino acid code from an AminoAcid
+aminoCode :: AminoAcid -> Char
+aminoCode (AminoAcid c) = c
+aminoCode AminoStop     = error "Stop does not have an amino code"
+
+-------------------------------------------------------------------------------
+
 -- | Transforms a genome into a list of codons (3-mers)
 codons :: Genome -> [Genome]
-codons = getKmers 3
+codons []            = []
+codons (_:[])        = []
+codons (_:_:[])      = []
+codons (n1:n2:n3:ns) = [n1, n2, n3] : codons ns
 
 -------------------------------------------------------------------------------
 
@@ -92,6 +104,12 @@ toAminoAcid ('U':'U':'C':[]) = AminoAcid 'F'
 toAminoAcid ('U':'U':'G':[]) = AminoAcid 'L'
 toAminoAcid ('U':'U':'U':[]) = AminoAcid 'F'
 toAminoAcid c = error $ c ++ " is an unknown codon"
+
+-------------------------------------------------------------------------------
+
+-- | Transforms an RNA string into a list of amino acids.
+toAminoAcids :: Genome -> [AminoAcid]
+toAminoAcids rna = map toAminoAcid $ codons rna
 
 -------------------------------------------------------------------------------
 
