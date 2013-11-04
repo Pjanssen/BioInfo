@@ -4,6 +4,7 @@ module BioInfo.List
      subsetIndices
    , isPartialMatch
    , combinations
+   , splitEvery
 )
 where
 
@@ -55,5 +56,13 @@ combinations len xs = head $ drop (len - 1)
 
 appendLetter :: [x] -> [x] -> [[x]]
 appendLetter xs ys = map (\y -> ys ++ [y]) xs
+
+-------------------------------------------------------------------------------
+
+-- | Splits a list into sublists of a given length.
+splitEvery :: Int -> [x] -> [[x]]
+splitEvery _ [] = []
+splitEvery n list = first : splitEvery n rest
+  where (first, rest) = splitAt n list
 
 -------------------------------------------------------------------------------
