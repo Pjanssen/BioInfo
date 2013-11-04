@@ -2,8 +2,10 @@ module BioInfo.RNA
 (
    -- * Data types
      AminoAcid(AminoAcid, AminoStop)
-   -- * Functions
    , aminoCode
+   -- * Functions
+   , toRNA
+   , fromRNA
    , codons
    , toAminoAcid
    , toAminoAcids
@@ -21,14 +23,33 @@ data AminoAcid = AminoAcid Char
 
 -------------------------------------------------------------------------------
 
--- | Gets the amino acid code from an AminoAcid
+-- | Gets the amino acid code from an AminoAcid.
 aminoCode :: AminoAcid -> Char
 aminoCode (AminoAcid c) = c
 aminoCode AminoStop     = error "Stop does not have an amino code"
 
 -------------------------------------------------------------------------------
 
--- | Transforms a genome into a list of codons (3-mers)
+-- | Transforms a DNA string into an RNA string.
+toRNA :: Genome -> Genome
+toRNA []       = []
+toRNA ('T':ns) = 'U' : toRNA ns
+toRNA (n:ns)   = n : toRNA ns
+
+-------------------------------------------------------------------------------
+
+-- | Transforms an RNA string into a DNA string.
+fromRNA :: Genome -> Genome
+fromRNA []       = []
+fromRNA ('U':ns) = 'T' : fromRNA ns
+fromRNA (n:ns)   = n : fromRNA ns
+
+-------------------------------------------------------------------------------
+
+-- | Transforms a genome into a list of codons (3-mers).
+--
+-- >>> codons "AUCGACUGC"
+-- ["AUC","GAC","UGC"]
 codons :: Genome -> [Genome]
 codons []            = []
 codons (_:[])        = []
@@ -37,7 +58,7 @@ codons (n1:n2:n3:ns) = [n1, n2, n3] : codons ns
 
 -------------------------------------------------------------------------------
 
--- | Translates a codon into an `AminoAcid`
+-- | Translates a codon into an `AminoAcid`.
 toAminoAcid :: Genome -> AminoAcid
 toAminoAcid ('A':'A':'A':[]) = AminoAcid 'K'
 toAminoAcid ('A':'A':'C':[]) = AminoAcid 'N'
