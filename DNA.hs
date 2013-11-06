@@ -10,6 +10,8 @@ module BioInfo.DNA (
 )
 where
 
+import BioInfo.List
+
 -------------------------------------------------------------------------------
 
 -- | A type synonym for a single nucleotide.
@@ -38,16 +40,8 @@ complement n   = error (n : " is an unknown nucleotide")
 -------------------------------------------------------------------------------
 
 -- | Creates a list of all kmers with the given length in the given genome.
---   For example:
---
--- >>> getKmers 3 "ACGTAGAC"
--- ["ACG","CGT","GTA","TAG","AGA","GAC"]
-getKmers :: Int -> Genome -> [Genome]
-getKmers k genome = head $ drop (k - 1) $ iterate init (getKmers' k genome)
-
-getKmers' :: Int -> Genome -> [Genome]
-getKmers' _ []     = []
-getKmers' k genome = take k genome : getKmers' k (tail genome)
+getKmers :: Int -> [Genome] -> [[Genome]]
+getKmers = subsets
 
 -------------------------------------------------------------------------------
 

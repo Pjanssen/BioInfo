@@ -1,10 +1,10 @@
 module BioInfo.List
 (
-   -- * List functions
      subsetIndices
    , isPartialMatch
    , combinations
    , splitEvery
+   , subsets
 )
 where
 
@@ -64,5 +64,17 @@ splitEvery :: Int -> [x] -> [[x]]
 splitEvery _ [] = []
 splitEvery n list = first : splitEvery n rest
   where (first, rest) = splitAt n list
+
+-------------------------------------------------------------------------------
+
+-- | Returns all subsets of length n in the given list.
+--
+-- >>> subsets 2 "ABCD"
+-- ["AB", "BC", "CD"]
+subsets :: Int -> [x] -> [[x]]
+subsets n xs = take (length xs - n + 1) $ subsets' n xs
+
+subsets' _ [] = []
+subsets' n xs = take n xs : subsets' n (tail xs)
 
 -------------------------------------------------------------------------------
