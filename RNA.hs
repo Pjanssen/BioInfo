@@ -9,10 +9,14 @@ module BioInfo.RNA
    , codons
    , toAminoAcid
    , toAminoAcids
+   , integerMass
+   , peptideMass
+   , peptideSpectrum
 )
 where
 
 import BioInfo.DNA
+import BioInfo.List
 
 -------------------------------------------------------------------------------
 
@@ -144,3 +148,46 @@ createAminoAcidFn f                  = error $ "Could not create function for " 
 
 -------------------------------------------------------------------------------
 
+-- | Gets the integer-mass for the given amino acid.
+integerMass :: AminoAcid -> Int
+integerMass (AminoAcid 'G') = 57
+integerMass (AminoAcid 'A') = 71
+integerMass (AminoAcid 'S') = 87
+integerMass (AminoAcid 'P') = 97
+integerMass (AminoAcid 'V') = 99
+integerMass (AminoAcid 'T') = 101
+integerMass (AminoAcid 'C') = 103
+integerMass (AminoAcid 'I') = 113
+integerMass (AminoAcid 'L') = 113
+integerMass (AminoAcid 'N') = 114
+integerMass (AminoAcid 'D') = 115
+integerMass (AminoAcid 'K') = 128
+integerMass (AminoAcid 'Q') = 128
+integerMass (AminoAcid 'E') = 129
+integerMass (AminoAcid 'M') = 131
+integerMass (AminoAcid 'H') = 137
+integerMass (AminoAcid 'F') = 147
+integerMass (AminoAcid 'R') = 156
+integerMass (AminoAcid 'Y') = 163
+integerMass (AminoAcid 'W') = 186
+integerMass _ = undefined
+
+-------------------------------------------------------------------------------
+
+-- | Calculates the integer-mass of a peptide.
+peptideMass :: [AminoAcid] -> Int
+peptideMass as = sum $ map integerMass as
+
+-------------------------------------------------------------------------------
+
+-- | Calculates the integer-mass of all possible subpeptides of a peptide.
+peptideSpectrum :: [AminoAcid] -> [Int]
+peptideSpectrum peptide = 0 : (map peptideMass $ subpeptides peptide)
+
+-------------------------------------------------------------------------------
+
+subpeptides :: [AminoAcid] -> [[AminoAcid]]
+subpeptides peptide = concatMap subpeptides' [1..(numAminoAcids - 1)] ++ [peptide]
+   where
+      numAminoAcids  = length peptide
+      subpeptides' k = subsets k $ take (numAminoAcids + (k - 1)) $ cycle peptide
