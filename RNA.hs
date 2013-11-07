@@ -55,10 +55,7 @@ fromRNA (n:ns)   = n : fromRNA ns
 -- >>> codons "AUCGACUGC"
 -- ["AUC","GAC","UGC"]
 codons :: Genome -> [Genome]
-codons []            = []
-codons (_:[])        = []
-codons (_:_:[])      = []
-codons (n1:n2:n3:ns) = [n1, n2, n3] : codons ns
+codons = splitEvery 3
 
 -------------------------------------------------------------------------------
 
